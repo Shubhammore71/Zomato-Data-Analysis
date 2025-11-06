@@ -141,28 +141,34 @@ Here are the 20 business problems solved using SQL, along with the business insi
 <!-- end list -->
 
 ```sql
+-- 1. Define the "RankedOrders" CTE
+WITH RankedOrders AS (
+    SELECT
+        c.customer_name,
+        o.order_item AS dishes,
+        COUNT(*) AS total_orders,
+        DENSE_RANK() OVER(ORDER BY COUNT(*) DESC) AS rank
+    FROM
+        orders AS o
+    JOIN
+        customers AS c ON c.customer_id = o.customer_id
+    WHERE
+        c.customer_name = 'Arjun Mehta'
+        AND o.order_date >= CURRENT_DATE - INTERVAL '1 Year'
+    GROUP BY
+        c.customer_name, o.order_item
+)
+-- 2. Select from the CTE
 SELECT
-	customer_name,
-	dishes,
-	total_orders
+    customer_name,
+    dishes,
+    total_orders
 FROM
-	(SELECT
-		c.customer_id,
-		c.customer_name,
-		o.order_item as dishes,
-		COUNT(*) as total_orders,
-		DENSE_RANK() OVER(ORDER BY COUNT(*) DESC) as rank
-	FROM orders as o
-	JOIN
-	customers as c
-	ON c.customer_id = o.customer_id
-	WHERE
-		o.order_date >= CURRENT_DATE - INTERVAL '1 Year'
-		AND
-		c.customer_name = 'Arjun Mehta'
-	GROUP BY 1, 2, 3
-	ORDER BY 1, 4 DESC) as t1
-WHERE rank <= 5;
+    RankedOrders
+WHERE
+    rank <= 5
+ORDER BY
+    total_orders DESC; -- Add a final ORDER BY for a clean, sorted result
 ```
 
 ### 2\. Popular Time Slots for Orders
