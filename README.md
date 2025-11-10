@@ -653,7 +653,7 @@ This project successfully demonstrates the power of SQL in extracting meaningful
 ## Contributors
 
   * Shubham More
-  * Naimkhan Shaikh
+  * Sidharth Verma
   * Pratyaksh Bhayre
 
 ## Disclaimer
